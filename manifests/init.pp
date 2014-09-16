@@ -57,7 +57,7 @@ class crowd (
 
   # Misc Settings
   $downloadURL       = $crowd::params::downloadURL,
-
+  $service_provider  = $crowd::params::service_provider
 ) inherits crowd::params {
 
   $webappdir    = "${installdir}/atlassian-${product}-${version}-standalone"

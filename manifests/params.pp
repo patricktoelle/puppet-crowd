@@ -1,22 +1,23 @@
 # Class crowd::params
 #
 class crowd::params {
-  $version        = '2.7.0'
-  $user           = 'crowd'
-  $group          = 'crowd'
-  $product        = 'crowd'
-  $format         = 'tar.gz'
-  $installdir     = '/opt/crowd'
-  $homedir        = '/var/crowd-home'
-  $db             = 'mysql'
-  $dbuser         = 'crowdadm'
-  $dbpassword     = 'mypassword'
-  $dbserver       = 'localhost'
-  $dbname         = 'crowd'
-  $mavenrepopath  = 'http://repo1.maven.org/maven2/mysql/mysql-connector-java'
-  $downloadURL  = 'http://www.atlassian.com/software/crowd/downloads/binary/'
-
-case $db {
+  $version          = '2.7.0'
+  $user             = 'crowd'
+  $uid              = undef
+  $group            = 'crowd'
+  $product          = 'crowd'
+  $service_provider = 'upstart'
+  $format           = 'tar.gz'
+  $installdir       = '/opt/crowd'
+  $homedir          = '/var/crowd-home'
+  $db               = 'mysql'
+  $dbuser           = 'crowdadm'
+  $dbpassword       = 'mypassword'
+  $dbserver         = 'localhost'
+  $dbname           = 'crowd'
+  $mavenrepopath    = 'http://repo1.maven.org/maven2/mysql/mysql-connector-java'
+  $downloadURL      = 'http://www.atlassian.com/software/crowd/downloads/binary/'
+  case $db {
     'mysql': {
       $dbport            = '3306'
       $dbdriver          = 'com.mysql.jdbc.Driver'
