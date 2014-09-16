@@ -44,6 +44,8 @@ class crowd::install {
     target  => "${crowd::installdir}/atlassian-${crowd::product}-${crowd::version}-standalone",
     url     => $crowd::downloadURL,
     strip   => true,
+    owner   => $crowd::user,
+    group   => $crowd::group,
     notify  => Exec["chown_${crowd::webappdir}"],
   } ->
 
