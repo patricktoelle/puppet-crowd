@@ -11,6 +11,15 @@ class crowd::config {
     require => Class['crowd::install'],
   }
 
+  if($crowd::java_home == undef) {
+    fail('Please set a value for the java_home parameter.')
+  }
+  file {"${crowd::webappdir}/apache-tomcat/bin/setenv.sh":
+    ensure  => present,
+    content => template('crowd/setenv.sh.erb'),
+    mode    => '0755',
+  }
+
   file {"${crowd::webappdir}/crowd-webapp/WEB-INF/classes/crowd-init.properties":
     content => template('crowd/crowd-init.properties.erb'),
   }

@@ -31,6 +31,8 @@ class crowd::install {
     init: {
       file { "/etc/init.d/crowd":
         ensure  => present,
+        owner   => 'root',
+        group   => 'root',
         content => template('crowd/etc/init.d/crowd.erb'),
         mode    => '0700'
       }
