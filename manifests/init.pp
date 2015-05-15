@@ -60,7 +60,9 @@ class crowd (
   $service_provider  = $crowd::params::service_provider,
   $java_home         = $crowd::params::java_home,
   $jvm_xms           = $crowd::params::jvm_xms,
-  $jvm_xmx           = $crowd::params::jvm_xmx
+  $jvm_xmx           = $crowd::params::jvm_xmx,
+  $jvm_opts          = $crowd::params::jvm_opts
+
 ) inherits crowd::params {
 
   $webappdir    = "${installdir}/atlassian-${product}-${version}-standalone"

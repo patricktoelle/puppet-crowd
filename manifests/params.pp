@@ -20,6 +20,7 @@ class crowd::params {
   $java_home        = undef
   $jvm_xms          = '256m'
   $jvm_xmx          = '512m'
+  $jvm_opts         = ''
 
   case $db {
     'mysql': {
