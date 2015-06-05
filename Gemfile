@@ -1,12 +1,51 @@
-source 'https://rubygems.org'
-puppetversion = ENV.key?('PUPPET_VERSION') ? "= #{ENV['PUPPET_VERSION']}" : ['>= 2.7']
+source ENV['GEM_SOURCE'] || "https://rubygems.org"
 
-gem 'puppet', puppetversion
-
-group :test do
-  gem 'rake', '>= 0.9.0'
-  gem 'rspec', '>= 2.8.0'
-  gem 'rspec-puppet', '>= 0.1.1'
-  gem 'puppetlabs_spec_helper', '>= 0.4.1'
-  gem 'puppet-lint'
+def location_for(place, fake_version = nil)
+  if place =~ /^(git:[^#]*)#(.*)/
+    [fake_version, { :git => $1, :branch => $2, :require => false }].compact
+  elsif place =~ /^file:\/\/(.*)/
+    ['>= 0', { :path => File.expand_path($1), :require => false }]
+  else
+    [place, { :require => false }]
+  end
 end
+
+group :development, :unit_tests do
+  gem 'rake',                    :require => false
+  gem 'rspec-core', '3.1.7',     :require => false
+  gem 'rspec-puppet', '~> 2.1',  :require => false
+  gem 'puppetlabs_spec_helper',  :require => false
+  gem 'puppet-lint',             :require => false
+  gem 'simplecov',               :require => false
+  gem 'puppet_facts',            :require => false
+  gem 'json',                    :require => false
+  gem 'metadata-json-lint',      :require => false
+end
+
+beaker_version = ENV['BEAKER_VERSION']
+beaker_rspec_version = ENV['BEAKER_RSPEC_VERSION']
+group :system_tests do
+  if beaker_version
+    gem 'beaker', *location_for(beaker_version)
+  end
+  if beaker_rspec_version
+    gem 'beaker-rspec', *location_for(beaker_rspec_version)
+  else
+    gem 'beaker-rspec',  :require => false
+  end
+  gem 'serverspec',    :require => false
+end
+
+if facterversion = ENV['FACTER_GEM_VERSION']
+  gem 'facter', facterversion, :require => false
+else
+  gem 'facter', :require => false
+end
+
+if puppetversion = ENV['PUPPET_GEM_VERSION']
+  gem 'puppet', puppetversion, :require => false
+else
+  gem 'puppet', :require => false
+end
+
+# vim:ft=ruby

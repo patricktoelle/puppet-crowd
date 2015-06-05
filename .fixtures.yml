@@ -1,7 +1,5 @@
 fixtures:
   repositories:
-    stdlib: "git://github.com/puppetlabs/puppetlabs-stdlib.git"
-    wget: "git://github.com/maestrodev/puppet-wget.git"
-    deploy: "git://github.com/mkrakowitzer/puppet-deploy.git"
+    stdlib: "https://github.com/puppetlabs/puppetlabs-stdlib.git"
   symlinks:
     crowd: "#{source_dir}"

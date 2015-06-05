@@ -2,8 +2,9 @@
 #
 class crowd::service {
   service { 'crowd':
-    ensure    => 'running',
-    provider  => $crowd::service_provider,
-    require   => Class['crowd::config'],
+    ensure   => 'running',
+    enable   => $crowd::service_enable,
+    provider => $crowd::service_provider,
+    require  => Class['crowd::config'],
   }
 }

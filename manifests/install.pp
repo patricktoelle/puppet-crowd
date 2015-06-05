@@ -5,8 +5,8 @@ class crowd::install {
   require crowd
 
   File {
-    owner   => $crowd::user,
-    group   => $crowd::group,
+    owner => $crowd::user,
+    group => $crowd::group,
   }
 
   file { $crowd::installdir:
@@ -15,7 +15,7 @@ class crowd::install {
 
   user { $crowd::user:
     comment    => 'Crowd daemon account',
-    shell      => '/bin/bash',
+    shell      => '/sbin/nologin',
     home       => $crowd::homedir,
     managehome => true,
     require    => File[$crowd::installdir],
@@ -29,8 +29,8 @@ class crowd::install {
       }
     }
     init: {
-      file { "/etc/init.d/crowd":
-        ensure  => present,
+      file { '/etc/init.d/crowd':
+        ensure  => 'file',
         owner   => 'root',
         group   => 'root',
         content => template('crowd/etc/init.d/crowd.erb'),
@@ -43,20 +43,21 @@ class crowd::install {
   }
 
   deploy::file { "atlassian-${crowd::product}-${crowd::version}.${crowd::format}":
-    target  => "${crowd::installdir}/atlassian-${crowd::product}-${crowd::version}-standalone",
-    url     => $crowd::downloadURL,
-    strip   => true,
-    owner   => $crowd::user,
-    group   => $crowd::group,
-    notify  => Exec["chown_${crowd::webappdir}"],
-  } ->
+    target => "${crowd::installdir}/atlassian-${crowd::product}-${crowd::version}-standalone",
+    url    => $crowd::downloadURL,
+    strip  => true,
+    owner  => $crowd::user,
+    group  => $crowd::group,
+    notify => Exec["chown_${crowd::webappdir}"],
+  }
 
 
   exec { "chown_${crowd::webappdir}":
     command     => "/bin/chown -R ${crowd::user}:${crowd::group} ${crowd::webappdir}",
     refreshonly => true,
-    subscribe   => User[$crowd::user]
-  } ->
+    subscribe   => User[$crowd::user],
+    require     => Deploy::File["atlassian-${crowd::product}-${crowd::version}.${crowd::format}"],
+  }
 
   file { '/var/log/crowd':
     ensure => 'directory',

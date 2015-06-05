@@ -58,6 +58,7 @@ class crowd (
   # Misc Settings
   $downloadURL       = $crowd::params::downloadURL,
   $service_provider  = $crowd::params::service_provider,
+  $service_enable    = $crowd::params::service_enable,
   $java_home         = $crowd::params::java_home,
   $jvm_xms           = $crowd::params::jvm_xms,
   $jvm_xmx           = $crowd::params::jvm_xmx,
@@ -65,9 +66,9 @@ class crowd (
 
 ) inherits crowd::params {
 
-  $webappdir    = "${installdir}/atlassian-${product}-${version}-standalone"
-  $dburl        = "jdbc:${db}://${dbserver}:${dbport}/${dbname}"
-  $iddburl      = "jdbc:${iddb}://${iddbserver}:${iddbport}/${iddbname}"
+  $webappdir = "${installdir}/atlassian-${product}-${version}-standalone"
+  $dburl     = "jdbc:${db}://${dbserver}:${dbport}/${dbname}"
+  $iddburl   = "jdbc:${iddb}://${iddbserver}:${iddbport}/${iddbname}"
 
   include crowd::install
   include crowd::config
