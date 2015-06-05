@@ -9,16 +9,16 @@ class crowd::install {
     group   => $crowd::group,
   }
 
-  user { $crowd::user:
-    comment          => 'Crowd daemon account',
-    shell            => '/bin/bash',
-    home             => $crowd::homedir,
-    managehome       => true,
-  }
-
-
   file { $crowd::installdir:
     ensure => 'directory',
+  }
+
+  user { $crowd::user:
+    comment    => 'Crowd daemon account',
+    shell      => '/bin/bash',
+    home       => $crowd::homedir,
+    managehome => true,
+    require    => File[$crowd::installdir],
   }
 
   case $crowd::service_provider {
