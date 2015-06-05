@@ -1,0 +1,41 @@
+{
+  "name": "joshbeard-crowd",
+  "version": "0.1.2",
+  "author": "joshbeard",
+  "summary": "Atlassian Crowd Puppet Module",
+  "license": "Apache-2.0",
+  "source": "https://github.com/joshbeard/puppet-crowd",
+  "project_page": "https://github.com/joshbeard/puppet-crowd",
+  "issues_url": "https://github.com/joshbeard/puppet-crowd/issues",
+  "dependencies": [
+    {
+      "name": "puppetlabs-stdlib",
+      "version_requirement": ">= 1.0.0"
+    },
+    {
+      "name": "mkrakowitzer-deploy",
+      "version_requirement": ">= 0.0.1"
+    },
+    {
+      "name": "maestrodev-wget",
+      "version_requirement": ">= 1.2.2"
+    }
+  ],
+  "operatingsystem_support": [
+    {
+      "operatingsystem": "Debian",
+      "operatingsystemrelease": [
+        "6",
+        "7"
+      ]
+    },
+    {
+      "operatingsystem": "RedHat",
+      "operatingsystemrelease": [
+        "5",
+        "6",
+        "7"
+      ]
+    }
+  ]
+}
