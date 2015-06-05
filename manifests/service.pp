@@ -1,4 +1,4 @@
-# Class crowd::install
+# Class crowd::service
 #
 class crowd::service {
   service { 'crowd':

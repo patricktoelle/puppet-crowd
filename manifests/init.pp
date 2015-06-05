@@ -62,7 +62,7 @@ class crowd (
   $java_home         = $crowd::params::java_home,
   $jvm_xms           = $crowd::params::jvm_xms,
   $jvm_xmx           = $crowd::params::jvm_xmx,
-  $jvm_opts          = $crowd::params::jvm_opts
+  $jvm_opts          = $crowd::params::jvm_opts,
 
 ) inherits crowd::params {
 
