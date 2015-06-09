@@ -1,6 +1,6 @@
 {
   "name": "joshbeard-crowd",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "author": "joshbeard",
   "summary": "Atlassian Crowd Puppet Module",
   "license": "Apache-2.0",
