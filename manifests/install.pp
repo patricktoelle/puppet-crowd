@@ -17,7 +17,15 @@ class crowd::install {
     comment    => 'Crowd daemon account',
     shell      => '/sbin/nologin',
     home       => $crowd::homedir,
-    managehome => true,
+    managehome => false,
+  }
+
+  file { $crowd::homedir:
+    ensure  => 'directory',
+    owner   => $crowd::user,
+    group   => $crowd::group,
+    mode    => '0750',
+    require => File[$crowd::installdir],
   }
 
   case $crowd::service_provider {
