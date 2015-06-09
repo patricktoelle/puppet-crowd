@@ -17,7 +17,7 @@ class crowd::params {
   $dbserver         = 'localhost'
   $dbname           = 'crowd'
   $mavenrepopath    = 'http://repo1.maven.org/maven2/mysql/mysql-connector-java'
-  $downloadURL      = 'http://www.atlassian.com/software/crowd/downloads/binary/'
+  $download_url     = 'http://www.atlassian.com/software/crowd/downloads/binary/'
   $java_home        = undef
   $jvm_xms          = '256m'
   $jvm_xmx          = '512m'

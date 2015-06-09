@@ -9,6 +9,7 @@ class crowd::config {
     group   => $crowd::group,
     mode    => '0644',
     require => Class['crowd::install'],
+    notify  => Class['crowd::service'],
   }
 
   if ($crowd::java_home == undef) {

@@ -56,7 +56,7 @@ class crowd (
   $idjdbcversion     = $crowd::params::idjdbcversion,
 
   # Misc Settings
-  $downloadURL       = $crowd::params::downloadURL,
+  $download_url      = $crowd::params::download_url,
   $service_provider  = $crowd::params::service_provider,
   $service_enable    = $crowd::params::service_enable,
   $java_home         = $crowd::params::java_home,

@@ -51,7 +51,7 @@ class crowd::install {
 
   deploy::file { "atlassian-${crowd::product}-${crowd::version}.${crowd::format}":
     target => "${crowd::installdir}/atlassian-${crowd::product}-${crowd::version}-standalone",
-    url    => $crowd::downloadURL,
+    url    => $crowd::download_url,
     strip  => true,
     owner  => $crowd::user,
     group  => $crowd::group,
