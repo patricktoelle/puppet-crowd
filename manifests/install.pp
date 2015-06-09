@@ -18,7 +18,6 @@ class crowd::install {
     shell      => '/sbin/nologin',
     home       => $crowd::homedir,
     managehome => true,
-    require    => File[$crowd::installdir],
   }
 
   case $crowd::service_provider {
