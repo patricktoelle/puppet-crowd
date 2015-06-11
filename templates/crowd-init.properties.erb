@@ -3,6 +3,6 @@
 # Any changes made here will be lost.
 ##################################################
 
-<% if @homedir -%>
-crowd.home=<%= @homedir %>
+<% if scope.lookupvar('crowd::homedir') -%>
+crowd.home=<%= scope.lookupvar('crowd::homedir') %>
 <% end -%>

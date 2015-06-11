@@ -3,7 +3,7 @@
 # Any changes made here will be lost.
 ##################################################
 hibernate.max_fetch_depth=1
-<% if @iddb == 'mysql' -%>
+<% if scope.lookupvar('crowd::iddb') == 'mysql' -%>
 hibernate.dialect=org.hibernate.dialect.MySQL5InnoDBDialect
 <% end -%>
 hibernate.show_sql=false
