@@ -7,77 +7,62 @@
 # description: Atlassian Crowd
 
 ### BEGIN INIT INFO
-# Provides:
-# Required-Start:
-# Required-Stop:
-# Should-Start:
-# Should-Stop:
-# Default-Start:
-# Default-Stop:
-# Short-Description:
-# Description:
+# Provides: crowd
+# Required-Start: $remote_fs $syslog
+# Required-Stop: $remote_fs $syslog
+# Default-Start: 2345
+# Default-Stop: 016
+# Short-Description: Start and stop the Atlassian Crowd service
+# Description: Provides the crowd authentication service
 ### END INIT INFO
 
 # Source function library.
 . /etc/rc.d/init.d/functions
 
-
-RUN_AS_USER=<%= scope.lookupvar('crowd::user') %>
-CATALINA_HOME=<%= scope.lookupvar('crowd::webappdir') %>/apache-tomcat
+RUN_AS_USER="<%= scope.lookupvar('crowd::user') %>"
+CATALINA_HOME="<%= scope.lookupvar('crowd::webappdir') %>/apache-tomcat"
 exec="${CATALINA_HOME}/bin/startup.sh"
 pidfile="${CATALINA_HOME}/work/crowd.pid"
 
-start() {
+crowd_start() {
   [ -x $exec ] || exit 5
-  echo -n $"Starting Crowd: "
-  # if not running, start it up here, usually something like "daemon $exec"
+  echo -n $"Starting crowd: "
   daemon --user "${RUN_AS_USER}" "${exec}"
   retval=$?
   echo
   return $retval
 }
 
-stop() {
-  echo -n $"Stopping Crowd: "
-  # stop it here, often "killproc $prog"
-  daemon --user "${RUN_AS_USER}" "$CATALINA_HOME/bin/shutdown.sh"
+crowd_stop() {
+  echo -n $"Stopping crowd: "
+  killproc -p $pidfile
   retval=$?
   echo
   return $retval
 }
-status() {
-  if [ -f $pidfile ]; then
-    PID=$(cat $pidfile)
-    if [ -z "`ps axf | grep ${PID} | grep -v grep`" ]; then
-      echo "Crowd: Process is dead but PID file exists at $pidfile"
-      exit 2
-    else
-      echo "Crowd is running with pid ${PID}..."
-      exit 0
-    fi
-  else
-    echo "Crowd is not running"
-    exit 1
-  fi
+
+crowd_status() {
+  status -p $pidfile crowd
+  retval=$?
+  echo
+  return $retval
 }
 
 case "$1" in
   start)
-    start
+    crowd_start
     ;;
   stop)
-    stop
+    crowd_stop
     ;;
   status)
-    status
+    crowd_status
     ;;
   restart)
-    stop
+    crowd_stop
     sleep 10
-    start
+    crowd_start
     ;;
   *)
     echo "Usage: $0 {start|stop|status|restart}"
 esac
-
-exit 0
