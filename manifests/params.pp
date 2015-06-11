@@ -6,7 +6,7 @@ class crowd::params {
   $uid              = undef
   $group            = 'crowd'
   $product          = 'crowd'
-  $service_provider = 'upstart'
+  $service_provider = 'init'
   $service_enable   = true
   $format           = 'tar.gz'
   $installdir       = '/opt/crowd'

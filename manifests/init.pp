@@ -3,8 +3,6 @@
 #
 # This module is used to install Crowd.
 #
-# This module requires mkrakowitzer-deploy and maestrodev-wget
-#
 # Format modeled on from @brycejohnson & @mkrakowitzer 's / puppet-jira module
 #
 # === Parameters

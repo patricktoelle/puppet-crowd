@@ -49,21 +49,23 @@ class crowd::install {
     }
   }
 
-  deploy::file { "atlassian-${crowd::product}-${crowd::version}.${crowd::format}":
-    target => "${crowd::installdir}/atlassian-${crowd::product}-${crowd::version}-standalone",
-    url    => $crowd::download_url,
-    strip  => true,
-    owner  => $crowd::user,
-    group  => $crowd::group,
-    notify => Exec["chown_${crowd::webappdir}"],
+  file { "${crowd::installdir}/atlassian-${crowd::product}-${crowd::version}-standalone":
+    ensure => 'directory',
   }
 
+  staging::file { "atlassian-${crowd::product}-${crowd::version}.${crowd::format}":
+    source  => "${crowd::download_url}/atlassian-${crowd::product}-${crowd::version}.${crowd::format}",
+    require => File["${crowd::installdir}/atlassian-${crowd::product}-${crowd::version}-standalone"],
+  }
 
-  exec { "chown_${crowd::webappdir}":
-    command     => "/bin/chown -R ${crowd::user}:${crowd::group} ${crowd::webappdir}",
-    refreshonly => true,
-    subscribe   => User[$crowd::user],
-    require     => Deploy::File["atlassian-${crowd::product}-${crowd::version}.${crowd::format}"],
+  staging::extract { "atlassian-${crowd::product}-${crowd::version}.${crowd::format}":
+    target  => "${crowd::installdir}/atlassian-${crowd::product}-${crowd::version}-standalone",
+    strip   => '1',
+    user    => $crowd::user,
+    group   => $crowd::group,
+    creates => "${crowd::installdir}/atlassian-${crowd::product}-${crowd::version}-standalone/apache-tomcat",
+    notify  => Exec["chown_${crowd::webappdir}"],
+    require => Staging::File["atlassian-${crowd::product}-${crowd::version}.${crowd::format}"],
   }
 
   file { '/var/log/crowd':
@@ -71,13 +73,20 @@ class crowd::install {
   }
 
   if $crowd::db == 'mysql' {
-    wget::fetch { 'mysql java connector':
-      source      => "${crowd::mavenrepopath}/${crowd::jdbcversion}/mysql-connector-java-${crowd::jdbcversion}.jar",
-      destination => "${crowd::webappdir}/apache-tomcat/lib/mysql-connector-java-${crowd::jdbcversion}.jar",
-      timeout     => 0,
-      verbose     => true,
-      require     => Exec["chown_${crowd::webappdir}"]
+    staging::file { 'mysql java connector':
+      source => "${crowd::mavenrepopath}/${crowd::jdbcversion}/mysql-connector-java-${crowd::jdbcversion}.jar",
+      target => "${crowd::webappdir}/apache-tomcat/lib/mysql-connector-java-${crowd::jdbcversion}.jar",
+      before => Exec["chown_${crowd::webappdir}"],
     }
   }
+
+  exec { "chown_${crowd::webappdir}":
+    command   => "chown -R ${crowd::user}:${crowd::group} ${crowd::webappdir}",
+    unless    => "find ${crowd::webappdir} ! -type l \\( ! -user ${crowd::user} -type f \\) -o \\( ! -group ${crowd::group} \\) -a \\( -type f \\)| wc -l | awk '{print \$1}' | grep -qE '^0'",
+    path      => '/bin:/usr/bin',
+    subscribe => User[$crowd::user],
+    require   => Staging::Extract["atlassian-${crowd::product}-${crowd::version}.${crowd::format}"],
+  }
+
 
 }
