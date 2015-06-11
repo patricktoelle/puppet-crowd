@@ -4,6 +4,8 @@ class crowd::install {
 
   require crowd
 
+  $_download_url = regsubst($::crowd::download_url, '\/$', '')
+
   File {
     owner => $crowd::user,
     group => $crowd::group,
@@ -54,7 +56,7 @@ class crowd::install {
   }
 
   staging::file { "atlassian-${crowd::product}-${crowd::version}.${crowd::format}":
-    source  => "${crowd::download_url}/atlassian-${crowd::product}-${crowd::version}.${crowd::format}",
+    source  => "${_download_url}/atlassian-${crowd::product}-${crowd::version}.${crowd::format}",
     require => File["${crowd::installdir}/atlassian-${crowd::product}-${crowd::version}-standalone"],
   }
 
