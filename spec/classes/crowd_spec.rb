@@ -39,7 +39,7 @@ describe 'crowd', :type => :class do
         end
         it 'should download and install the Atlassian Crowd application' do
           should contain_staging__file('atlassian-crowd-2.8.3.tar.gz').with(
-              :source => 'http://www.atlassian.com/software/crowd/downloads/binary/atlassian-crowd-2.8.3.tar.gz',
+              :source => 'http://www.atlassian.com/software/crowd/downloads/binary/atlassian-crowd-2.8.3.tar.gz'
           )
           should contain_staging__extract('atlassian-crowd-2.8.3.tar.gz').with(
             :target  => '/opt/crowd/atlassian-crowd-2.8.3-standalone',
