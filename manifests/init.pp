@@ -1,75 +1,181 @@
 
 # == Class: crowd
 #
-# This module is used to install Crowd.
-#
-# Format modeled on from @brycejohnson & @mkrakowitzer 's / puppet-jira module
-#
-# === Parameters
-#
-# === Examples
-#
-#  class { 'crowd':
-#
-#  }
-#
-# === Authors
-#
-# Martin Jackson
-#
-# Todo
+# Refer to the README for documentation
 #
 class crowd (
+  $version                    = '2.8.3',
+  $extension                  = 'tar.gz',
+  $product                    = 'crowd',
+  $installdir                 = '/opt/crowd',
+  $homedir                    = '/var/local/crowd',
+  $tomcat_port                = '8095',
+  $max_threads                = '150',
+  $connection_timeout         = '20000',
+  $accept_count               = '100',
+  $min_spare_threads          = '25',
+  $proxy                      = {},
+  $manage_user                = true,
+  $manage_group               = true,
+  $user                       = 'crowd',
+  $group                      = 'crowd',
+  $uid                        = undef,
+  $gid                        = undef,
+  $shell                      = '/sbin/nologin',
+  $password                   = '*',
+  $download_driver            = true,
+  $mysql_driver               = 'http://central.maven.org/maven2/mysql/mysql-connector-java/5.1.36/mysql-connector-java-5.1.36.jar',
+  $download_url               = 'http://www.atlassian.com/software/crowd/downloads/binary/',
+  $java_home                  = '/usr/lib/jvm/java',
+  $jvm_xms                    = '256m',
+  $jvm_xmx                    = '512m',
+  $jvm_permgen                = '256m',
+  $jvm_opts                   = '',
+  $db                         = 'mysql',
+  $dbuser                     = 'crowdadm',
+  $dbpassword                 = 'mypassword',
+  $dbserver                   = 'localhost',
+  $dbname                     = 'crowd',
+  $dbport                     = undef,
+  $dbdriver                   = undef,
+  $iddb                       = 'mysql',
+  $iddbuser                   = 'idcrowdadm',
+  $iddbpassword               = 'mypassword',
+  $iddbserver                 = 'localhost',
+  $iddbname                   = 'crowdiddb',
+  $iddbport                   = undef,
+  $iddbdriver                 = undef,
+  $manage_service             = true,
+  $service_file               = $crowd::params::service_file,
+  $service_template           = $crowd::params::service_template,
+  $service_mode               = $crowd::params::service_mode,
+  $service_ensure             = 'running',
+  $service_enable             = true,
+  $service_provider           = undef,
+) {
 
-  # Crowd Settings
-  $version           = $crowd::params::version,
-  $product           = $crowd::params::product,
-  $format            = $crowd::params::format,
-  $installdir        = $crowd::params::installdir,
-  $homedir           = $crowd::params::homedir,
-  $user              = $crowd::params::user,
-  $group             = $crowd::params::group,
-  $mavenrepopath     = $crowd::params::mavenrepopath,
+  validate_re($version, '^\d+\.\d+.\d+$')
+  validate_re($extension, '^(tar\.gz|\.zip)$')
+  validate_absolute_path($installdir)
+  validate_absolute_path($homedir)
 
-  # Crowd Database Settings
-  $db                = $crowd::params::db,
-  $dbuser            = $crowd::params::dbuser,
-  $dbpassword        = $crowd::params::dbpassword,
-  $dbserver          = $crowd::params::dbserver,
-  $dbname            = $crowd::params::dbname,
-  $dbport            = $crowd::params::dbport,
-  $dbdriver          = $crowd::params::dbdriver,
-  $dbtype            = $crowd::params::dbtype,
-  $jdbcversion       = $crowd::params::jdbcversion,
+  validate_integer($tomcat_port)
+  validate_integer($max_threads)
+  validate_integer($connection_timeout)
+  validate_integer($accept_count)
+  validate_integer($min_spare_threads)
+  validate_hash($proxy)
+  validate_bool($manage_user)
+  validate_bool($manage_group)
 
-  # CrowdID Database Settings
-  $iddb              = $crowd::params::iddb,
-  $iddbuser          = $crowd::params::iddbuser,
-  $iddbpassword      = $crowd::params::iddbpassword,
-  $iddbserver        = $crowd::params::iddbserver,
-  $iddbname          = $crowd::params::iddbname,
-  $iddbport          = $crowd::params::iddbport,
-  $iddbdriver        = $crowd::params::iddbdriver,
-  $iddbtype          = $crowd::params::iddbtype,
-  $idjdbcversion     = $crowd::params::idjdbcversion,
+  validate_re($user, '^[a-z_][a-z0-9_-]*[$]?$')
+  validate_re($group, '^[a-z_][a-z0-9_-]*[$]?$')
 
-  # Misc Settings
-  $download_url      = $crowd::params::download_url,
-  $service_provider  = $crowd::params::service_provider,
-  $service_enable    = $crowd::params::service_enable,
-  $java_home         = $crowd::params::java_home,
-  $jvm_xms           = $crowd::params::jvm_xms,
-  $jvm_xmx           = $crowd::params::jvm_xmx,
-  $jvm_opts          = $crowd::params::jvm_opts,
+  if $uid { validate_integer($uid) }
+  if $gid { validate_integer($gid) }
 
-) inherits crowd::params {
+  validate_string($password)
+  validate_absolute_path($shell)
 
-  $webappdir = "${installdir}/atlassian-${product}-${version}-standalone"
-  $dburl     = "jdbc:${db}://${dbserver}:${dbport}/${dbname}"
-  $iddburl   = "jdbc:${iddb}://${iddbserver}:${iddbport}/${iddbname}"
+  validate_re($download_url, '^((https?|ftps?):\/\/)?([\da-z\.-]+)\.?([a-z\.]{2,6})([\/\w \.-]*)*\/?$')
 
-  include crowd::install
-  include crowd::config
-  include crowd::service
+  if $db == 'mysql' {
+    validate_re($mysql_driver, '^((https?|ftps?):\/\/)?([\da-z\.-]+)\.?([a-z\.]{2,6})([\/\w \.-]*)*\/?\.jar$')
+  }
+
+  validate_absolute_path($java_home)
+  validate_re($jvm_xms, '\d+(m|g)$')
+  validate_re($jvm_xmx, '\d+(m|g)$')
+  validate_re($jvm_permgen, '\d+(m|g)$')
+
+  if !empty($jvm_opts) { validate_string($jvm_opts) }
+
+  validate_re($db, '^(mysql|postgres)$')
+  validate_re($dbuser, '\d+(m|g)$')
+  validate_string($dbpassword)
+  validate_string($dbserver)
+  validate_string($dbname)
+  if $dbport { validate_integer($dbport) }
+  if $dbdriver { validate_string($dbdriver) }
+
+  validate_re($iddb, '^(mysql|postgres)$')
+  validate_re($iddbuser, '\d+(m|g)$')
+  validate_string($iddbpassword)
+  validate_string($iddbserver)
+  validate_string($iddbname)
+  if $iddbport { validate_integer($iddbport) }
+  if $iddbdriver { validate_string($iddbdriver) }
+
+  validate_bool($manage_service)
+  validate_absolute_path($service_file)
+  validate_re($service_ensure, '(running|stopped)')
+  validate_bool($service_enable)
+  validate_re($service_template, '^(\w+)\/([\.\w\s]+)$',
+    'service_template should be modulename/path/to/template.erb'
+  )
+
+  if $service_provider { validate_string($service_provider) }
+
+  case $db {
+    'mysql': {
+      $_dbport = $dbport ? {
+        undef   => '3306',
+        default => $dbport,
+      }
+      $_dbdriver = $dbdriver ? {
+        undef   => 'com.mysql.jdbc.Driver',
+        default => $dbdriver,
+      }
+    }
+    'postgres': {
+      $_dbport = $dbport ? {
+        undef   => '5432',
+        default => $dbport,
+      }
+      $_dbdriver = $dbdriver ? {
+        undef   => 'org.postgresql.Driver',
+        default => $dbdriver,
+      }
+    }
+    default: {
+      warning("db database type ${db} is not supported")
+    }
+  }
+
+  case $iddb {
+    'mysql': {
+      $_iddbport = $iddbport ? {
+        undef   => '3306',
+        default => $iddbport,
+      }
+      $_iddbdriver = $iddbdriver ? {
+        undef   => 'com.mysql.jdbc.Driver',
+        default => $iddbdriver,
+      }
+    }
+    'postgres': {
+      $_iddbport = $iddbport ? {
+        undef   => '5432',
+        default => $iddbport,
+      }
+      $_iddbdriver = $iddbdriver ? {
+        undef   => 'org.postgresql.Driver',
+        default => $iddbdriver,
+      }
+    }
+    default: {
+      warning("iddb database type ${iddb} is not supported")
+    }
+  }
+
+  $app_dir = "${installdir}/atlassian-${product}-${version}-standalone"
+  $dburl   = "jdbc:${db}://${dbserver}:${_dbport}/${dbname}"
+  $iddburl = "jdbc:${iddb}://${iddbserver}:${_iddbport}/${iddbname}"
+
+  anchor { 'crowd::begin': }->
+  class { 'crowd::install': }->
+  class { 'crowd::config': }~>
+  class { 'crowd::service': }->
+  anchor { 'crowd::end': }
 
 }

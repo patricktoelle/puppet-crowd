@@ -20,7 +20,7 @@
 . /etc/rc.d/init.d/functions
 
 RUN_AS_USER="<%= scope.lookupvar('crowd::user') %>"
-CATALINA_HOME="<%= scope.lookupvar('crowd::webappdir') %>/apache-tomcat"
+CATALINA_HOME="<%= scope.lookupvar('crowd::app_dir') %>/apache-tomcat"
 exec="${CATALINA_HOME}/bin/startup.sh"
 pidfile="${CATALINA_HOME}/work/crowd.pid"
 

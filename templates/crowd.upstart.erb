@@ -6,10 +6,10 @@ stop on shutdown
 respawn
 kill timeout 30
 
-setuid <%= @user %>
-setgid <%= @group %>
+setuid <%= scope.lookupvar('crowd::user') %>
+setgid <%= scope.lookupvar('crowd::group') %>
 
-env BASEDIR=<%= @webappdir %>/apache-tomcat
+env BASEDIR=<%= scope.lookupvar('crowd::app_dir') %>/apache-tomcat
 
 script
     LOGFILE=/var/log/crowd/crowd.`date +%Y-%m-%d`.log
