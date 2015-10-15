@@ -433,13 +433,13 @@ bundle exec rake spec
 Syntax validation:
 
 ```shell
-bundle rake validate
+bundle exec rake validate
 ```
 
 Puppet Lint:
 
 ```shell
-bundle rake lint
+bundle exec rake lint
 ```
 
 ## Authors and Contributors
