@@ -274,13 +274,13 @@ The database type to use.  The module supports either `mysql` or `postgres`
 
 __`dbuser`__
 
-Default:  'crowdadm'
+Default:  'crowd'
 
 The username for connecting to the database.
 
 __`dbpassword`__
 
-Default:  'mypassword'
+Default:  'crowd'
 
 The database password.
 
@@ -321,13 +321,13 @@ See [https://confluence.atlassian.com/display/CROWD/Installing+Crowd+and+CrowdID
 
 __`iddbuser`__
 
-Default:  'idcrowdadm'
+Default:  'crowd'
 
 The database username for the CrowdID database.
 
 __`iddbpassword`__
 
-Default:  'mypassword'
+Default:  'crowd'
 
 The database password for the CrowdID database.
 
@@ -339,7 +339,7 @@ The address for the database server for the CrowdID database.
 
 __`iddbname`__
 
-Default:  'crowdiddb'
+Default:  'crowdid'
 
 The name of the database for the CrowdID database.
 

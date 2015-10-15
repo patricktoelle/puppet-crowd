@@ -77,10 +77,11 @@ class crowd (
   validate_string($password)
   validate_absolute_path($shell)
 
-  validate_re($download_url, '^((https?|ftps?):\/\/)?([\da-z\.-]+)\.?([a-z\.]{2,6})([\/\w \.-]*)*\/?$')
+  validate_re($download_url, '^((https?|ftps?):\/\/)([\da-z\.-]+)\.?([a-z\.]{2,6})([\/\w \.-]*)*\/?$')
 
+  validate_bool($download_driver)
   if $db == 'mysql' {
-    validate_re($mysql_driver, '^((https?|ftps?):\/\/)?([\da-z\.-]+)\.?([a-z\.]{2,6})([\/\w \.-]*)*\/?\.jar$')
+    validate_re($mysql_driver, '^((https?|ftps?):\/\/)([\da-z\.-]+)\.?([a-z\.]{2,6})([\/\w \.-]*)*\/?\.jar$')
   }
 
   validate_absolute_path($java_home)
@@ -110,7 +111,7 @@ class crowd (
   validate_absolute_path($service_file)
   validate_re($service_ensure, '(running|stopped)')
   validate_bool($service_enable)
-  validate_re($service_template, '^(\w+)\/([\.\w\s]+)$',
+  validate_re($service_template, '^(\w+)\/([\/\.\w\s]+)$',
     'service_template should be modulename/path/to/template.erb'
   )
 
@@ -126,6 +127,7 @@ class crowd (
         undef   => 'com.mysql.jdbc.Driver',
         default => $dbdriver,
       }
+      $dbtype = 'mysql'
     }
     'postgres': {
       $_dbport = $dbport ? {
@@ -136,6 +138,7 @@ class crowd (
         undef   => 'org.postgresql.Driver',
         default => $dbdriver,
       }
+      $dbtype = 'postgresql'
     }
     default: {
       warning("db database type ${db} is not supported")
@@ -152,6 +155,7 @@ class crowd (
         undef   => 'com.mysql.jdbc.Driver',
         default => $iddbdriver,
       }
+      $iddbtype = 'mysql'
     }
     'postgres': {
       $_iddbport = $iddbport ? {
@@ -162,6 +166,7 @@ class crowd (
         undef   => 'org.postgresql.Driver',
         default => $iddbdriver,
       }
+      $iddbtype = 'postgresql'
     }
     default: {
       warning("iddb database type ${iddb} is not supported")
@@ -169,8 +174,8 @@ class crowd (
   }
 
   $app_dir = "${installdir}/atlassian-${product}-${version}-standalone"
-  $dburl   = "jdbc:${db}://${dbserver}:${_dbport}/${dbname}"
-  $iddburl = "jdbc:${iddb}://${iddbserver}:${_iddbport}/${iddbname}"
+  $dburl   = "jdbc:${dbtype}://${dbserver}:${_dbport}/${dbname}"
+  $iddburl = "jdbc:${iddbtype}://${iddbserver}:${_iddbport}/${iddbname}"
 
   anchor { 'crowd::begin': }->
   class { 'crowd::install': }->
