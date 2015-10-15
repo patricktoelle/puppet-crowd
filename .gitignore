@@ -3,5 +3,6 @@
 .tmp
 .idea
 .swp
+pkg/
 Gemfile.lock
 spec/fixtures
