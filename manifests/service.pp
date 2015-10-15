@@ -1,9 +1,10 @@
 # Class crowd::service
 #
 class crowd::service {
-  file { $crowd::service_file:
+  file { 'crowd_service':
     ensure  => 'file',
-    content => template($crowd::service_template),
+    content => template($::crowd::service_template),
+    path    => $crowd::service_file,
     mode    => $crowd::service_mode,
     owner   => 'root',
     group   => 'root',

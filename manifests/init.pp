@@ -32,17 +32,17 @@ class crowd (
   $jvm_permgen                = '256m',
   $jvm_opts                   = '',
   $db                         = 'mysql',
-  $dbuser                     = 'crowdadm',
-  $dbpassword                 = 'mypassword',
+  $dbuser                     = 'crowd',
+  $dbpassword                 = 'crowd',
   $dbserver                   = 'localhost',
   $dbname                     = 'crowd',
   $dbport                     = undef,
   $dbdriver                   = undef,
   $iddb                       = 'mysql',
-  $iddbuser                   = 'idcrowdadm',
-  $iddbpassword               = 'mypassword',
+  $iddbuser                   = 'crowd',
+  $iddbpassword               = 'crowd',
   $iddbserver                 = 'localhost',
-  $iddbname                   = 'crowdiddb',
+  $iddbname                   = 'crowdid',
   $iddbport                   = undef,
   $iddbdriver                 = undef,
   $manage_service             = true,
@@ -52,7 +52,7 @@ class crowd (
   $service_ensure             = 'running',
   $service_enable             = true,
   $service_provider           = undef,
-) {
+) inherits crowd::params {
 
   validate_re($version, '^\d+\.\d+.\d+$')
   validate_re($extension, '^(tar\.gz|\.zip)$')
@@ -91,7 +91,7 @@ class crowd (
   if !empty($jvm_opts) { validate_string($jvm_opts) }
 
   validate_re($db, '^(mysql|postgres)$')
-  validate_re($dbuser, '\d+(m|g)$')
+  validate_re($dbuser, '^[a-z_][a-z0-9_-]*[$]?$')
   validate_string($dbpassword)
   validate_string($dbserver)
   validate_string($dbname)
@@ -99,7 +99,7 @@ class crowd (
   if $dbdriver { validate_string($dbdriver) }
 
   validate_re($iddb, '^(mysql|postgres)$')
-  validate_re($iddbuser, '\d+(m|g)$')
+  validate_re($iddbuser, '^[a-z_][a-z0-9_-]*[$]?$')
   validate_string($iddbpassword)
   validate_string($iddbserver)
   validate_string($iddbname)
