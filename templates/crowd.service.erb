@@ -5,7 +5,7 @@ After=network.target
 [Service]
 Type=forking
 User=<%= scope.lookupvar('crowd::user') %>
-PIDFile=<%= scope.lookupvar('crowd::app_dir') %>/apache-tomcat/work/catalina.pid
+PIDFile=<%= scope.lookupvar('crowd::app_dir') %>/apache-tomcat/work/crowd.pid
 ExecStart=<%= scope.lookupvar('crowd::app_dir') %>/apache-tomcat/bin/startup.sh
 ExecStop=<%= scope.lookupvar('crowd::app_dir') %>/apache-tomcat/bin/shutdown.sh
 
