@@ -10,8 +10,8 @@
 # Provides: crowd
 # Required-Start: $remote_fs $syslog
 # Required-Stop: $remote_fs $syslog
-# Default-Start: 2345
-# Default-Stop: 016
+# Default-Start: 2 3 4 5
+# Default-Stop: 0 1 6
 # Short-Description: Start and stop the Atlassian Crowd service
 # Description: Provides the crowd authentication service
 ### END INIT INFO
@@ -21,24 +21,25 @@
 
 RUN_AS_USER="<%= scope.lookupvar('crowd::user') %>"
 CATALINA_HOME="<%= scope.lookupvar('crowd::app_dir') %>/apache-tomcat"
-exec="${CATALINA_HOME}/bin/startup.sh"
-pidfile="${CATALINA_HOME}/work/crowd.pid"
 
 crowd_start() {
-  [ -x $exec ] || exit 5
-  echo -n $"Starting crowd: "
-  daemon --user "${RUN_AS_USER}" "${exec}"
-  retval=$?
-  echo
-  return $retval
+  echo "Starting Crowd: "
+  if [ "x$USER" != "x$RUN_AS_USER" ]; then
+    sudo -u $RUN_AS_USER "$CATALINA_HOME/bin/startup.sh"
+  else
+    $CATALINA_HOME/bin/startup.sh
+  fi
+  echo "done."
 }
 
 crowd_stop() {
-  echo -n $"Stopping crowd: "
-  killproc -p $pidfile
-  retval=$?
-  echo
-  return $retval
+  echo "Shutting down Crowd: "
+  if [ "x$USER" != "x$RUN_AS_USER" ]; then
+    sudo -u $RUN_AS_USER "$CATALINA_HOME/bin/shutdown.sh"
+  else
+    $CATALINA_HOME/bin/shutdown.sh
+  fi
+  echo "done."
 }
 
 crowd_status() {
