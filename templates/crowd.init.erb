@@ -17,7 +17,10 @@
 ### END INIT INFO
 
 # Source function library.
-. /etc/rc.d/init.d/functions
+if [ -e /etc/rc.d/init.d/functions ]
+  then
+    . /etc/rc.d/init.d/functions
+fi
 
 RUN_AS_USER="<%= scope.lookupvar('crowd::user') %>"
 CATALINA_HOME="<%= scope.lookupvar('crowd::app_dir') %>/apache-tomcat"
